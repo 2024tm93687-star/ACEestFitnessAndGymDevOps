@@ -1,1 +1,6 @@
-# ACEestFitnessAndGymDevOps
+# ACEest Fitness & Gym App
+
+## Setup
+```bash
+pip install -r requirements.txt
+python app.py
