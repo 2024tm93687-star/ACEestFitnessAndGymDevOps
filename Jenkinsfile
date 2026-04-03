@@ -12,8 +12,8 @@ pipeline {
             steps {
                 script {
                     if (isUnix()) {
-                        sh 'python -m pip install --upgrade pip'
-                        sh 'python -m pip install -r requirements.txt'
+                        sh 'python3 -m pip install --upgrade pip'
+                        sh 'python3 -m pip install -r requirements.txt'
                     } else {
                         bat 'python -m pip install --upgrade pip'
                         bat 'python -m pip install -r requirements.txt'
@@ -26,7 +26,7 @@ pipeline {
             steps {
                 script {
                     if (isUnix()) {
-                        sh 'python -m pytest test_app.py -v'
+                        sh 'python3 -m pytest test_app.py -v'
                     } else {
                         bat 'python -m pytest test_app.py -v'
                     }
