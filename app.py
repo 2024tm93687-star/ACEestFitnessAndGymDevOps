@@ -1,4 +1,6 @@
-﻿from flask import Flask, jsonify, abort
+﻿import os
+
+from flask import Flask, jsonify, abort
 
 class ACEestService:
     def __init__(self):
@@ -76,4 +78,8 @@ def handle_not_found(error):
     return jsonify({'error': error.description}), 404
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # Safe defaults for local execution; override via environment variables when needed.
+    host = os.getenv('FLASK_HOST', '127.0.0.1')
+    port = int(os.getenv('FLASK_PORT', '5000'))
+    debug = os.getenv('FLASK_DEBUG', 'false').lower() == 'true'
+    app.run(host=host, port=port, debug=debug)

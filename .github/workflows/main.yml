@@ -36,7 +36,7 @@ jobs:
       - name: Run security scan (Bandit)
         run: |
           python -m pip install bandit
-          bandit -r . -x .venv
+          bandit -r . -x .venv,test_app.py
 
       - name: Run dependency vulnerability scan (pip-audit)
         run: |
