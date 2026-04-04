@@ -12,11 +12,18 @@ pipeline {
             steps {
                 script {
                     if (isUnix()) {
-                        sh 'python3 -m pip install --upgrade pip'
-                        sh 'python3 -m pip install -r requirements.txt'
+                        // 1. Create venv 2. Upgrade pip 3. Install requirements
+                        sh '''
+                            python3 -m venv venv
+                            ./venv/bin/python3 -m pip install --upgrade pip
+                            ./venv/bin/python3 -m pip install -r requirements.txt
+                        '''
                     } else {
-                        bat 'python -m pip install --upgrade pip'
-                        bat 'python -m pip install -r requirements.txt'
+                        bat '''
+                            python -m venv venv
+                            venv\\Scripts\\python -m pip install --upgrade pip
+                            venv\\Scripts\\python -m pip install -r requirements.txt
+                        '''
                     }
                 }
             }
@@ -26,9 +33,10 @@ pipeline {
             steps {
                 script {
                     if (isUnix()) {
-                        sh 'python3 -m pytest test_app.py -v'
+                        // Use the python inside the venv to run pytest
+                        sh './venv/bin/python3 -m pytest test_app.py -v'
                     } else {
-                        bat 'python -m pytest test_app.py -v'
+                        bat 'venv\\Scripts\\python -m pytest test_app.py -v'
                     }
                 }
             }
@@ -37,6 +45,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
+                    // Docker commands are usually the same across platforms if Docker Desktop is installed
                     if (isUnix()) {
                         sh 'docker build -t aceest-fitness-app:latest .'
                     } else {
