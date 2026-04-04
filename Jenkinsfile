@@ -67,9 +67,25 @@ pipeline {
             }
         }
 
+        stage('Detect Branch Context') {
+            steps {
+                script {
+                    def rawBranch = env.BRANCH_NAME ?: env.GIT_BRANCH ?: ''
+                    def normalizedBranch = rawBranch.replaceFirst('^origin/', '').replaceFirst('^refs/heads/', '')
+                    echo "BRANCH_NAME=${env.BRANCH_NAME}"
+                    echo "GIT_BRANCH=${env.GIT_BRANCH}"
+                    echo "Normalized branch=${normalizedBranch}"
+                }
+            }
+        }
+
         stage('Deploy to DEV') {
             when {
-                branch 'develop'
+                expression {
+                    def rawBranch = env.BRANCH_NAME ?: env.GIT_BRANCH ?: ''
+                    def normalizedBranch = rawBranch.replaceFirst('^origin/', '').replaceFirst('^refs/heads/', '')
+                    return normalizedBranch == 'develop'
+                }
             }
             steps {
                 script {
@@ -98,7 +114,11 @@ pipeline {
 
         stage('Deploy to PROD') {
             when {
-                branch 'main'
+                expression {
+                    def rawBranch = env.BRANCH_NAME ?: env.GIT_BRANCH ?: ''
+                    def normalizedBranch = rawBranch.replaceFirst('^origin/', '').replaceFirst('^refs/heads/', '')
+                    return normalizedBranch == 'main'
+                }
             }
             steps {
                 script {
